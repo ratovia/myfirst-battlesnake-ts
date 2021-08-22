@@ -4,10 +4,10 @@ export function info(): InfoResponse {
     console.log("INFO")
     const response: InfoResponse = {
         apiversion: "1",
-        author: "",
-        color: "#888888",
-        head: "default",
-        tail: "default"
+        author: "ratovia",
+        color: "#49da78",
+        head: "silly",
+        tail: "bolt"
     }
     return response
 }
@@ -28,7 +28,7 @@ export function move(gameState: GameState): MoveResponse {
         right: true
     }
 
-    // Step 0: Don't let your Battlesnake move back on it's own neck
+    // 自分自身にぶつからない
     const myHead = gameState.you.head
     const myNeck = gameState.you.body[1]
     if (myNeck.x < myHead.x) {
@@ -41,15 +41,38 @@ export function move(gameState: GameState): MoveResponse {
         possibleMoves.up = false
     }
 
-    // TODO: Step 1 - Don't hit walls.
-    // Use information in gameState to prevent your Battlesnake from moving beyond the boundaries of the board.
-    // const boardWidth = gameState.board.width
-    // const boardHeight = gameState.board.height
+    // 壁にぶつからない
+    const boardWidth = gameState.board.width
+    const boardHeight = gameState.board.height
 
-    // TODO: Step 2 - Don't hit yourself.
-    // Use information in gameState to prevent your Battlesnake from colliding with itself.
-    // const mybody = gameState.you.body
-
+    if (myHead.x === 0) {
+        possibleMoves.left = false
+    } 
+    if (myHead.x === boardWidth - 1) {
+        possibleMoves.right = false
+    }
+    if (myHead.y === 0) {
+        possibleMoves.down = false
+    }
+    if (myHead.y === boardHeight - 1) {
+        possibleMoves.up = false
+    }
+    // 自分の体に当たらない
+    const mybody = gameState.you.body
+    mybody.forEach((body) =>{
+      if (myHead.x - 1 === body.x && myHead.y === body.y) {
+        possibleMoves.left = false
+      }
+      if (myHead.x + 1 === body.x && myHead.y === body.y) {
+        possibleMoves.right = false
+      }
+      if (myHead.x === body.x && myHead.y - 1 === body.y) {
+        possibleMoves.down = false
+      }
+      if (myHead.x === body.x && myHead.y + 1 === body.y) {
+        possibleMoves.up = false
+      }
+    })
     // TODO: Step 3 - Don't collide with others.
     // Use information in gameState to prevent your Battlesnake from colliding with others.
 
